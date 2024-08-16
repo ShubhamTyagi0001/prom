@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  prom-server:
+    image: prom/prometheus
+    volumes:
+      - /home/user/peomethious/prometheus-config.yaml:/etc/prometheus/prometheus.yaml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    depends_on:
+      - serviceapps
+    ports:
+      - "9090:9090"
+    networks:
+      - appservice
+
+  serviceapps:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    hostname: serviceapps
+    container_name: serviceapps
+    networks:
+      - appservice
+
+networks:
+  appservice:
+    driver: bridge
